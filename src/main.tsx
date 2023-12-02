@@ -3,12 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { sepolia } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
 const { webSocketPublicClient, publicClient, chains } = configureChains(
-  [polygonMumbai],
+  [sepolia],
   [alchemyProvider({ apiKey: import.meta.env.VITE_APP_Alchemy })]
 );
 const config = createConfig(
