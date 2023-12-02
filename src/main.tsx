@@ -6,6 +6,8 @@ import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import Navbar from "./componensts/navbar";
+import Footer from "./componensts/footer.tsx";
 
 const { webSocketPublicClient, publicClient, chains } = configureChains(
   [sepolia],
@@ -24,8 +26,17 @@ const config = createConfig(
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <WagmiConfig config={config}>
-      <ConnectKitProvider debugMode>
+      <ConnectKitProvider
+        theme="midnight"
+        debugMode
+        customTheme={{
+          "--ck-accent-color": "#4628dc",
+          "--ck-accent-text-color": "#ffffff",
+        }}
+      >
+        <Navbar />
         <App />
+        <Footer />
       </ConnectKitProvider>
     </WagmiConfig>
   </React.StrictMode>
