@@ -5,13 +5,14 @@ import "./index.css";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { infuraProvider } from "wagmi/providers/infura";
 import Navbar from "./componensts/navbar";
 import Footer from "./componensts/footer.tsx";
+import { BrowserRouter } from "react-router-dom";
 
 const { webSocketPublicClient, publicClient, chains } = configureChains(
   [sepolia],
-  [alchemyProvider({ apiKey: import.meta.env.VITE_APP_Alchemy })]
+  [infuraProvider({ apiKey: import.meta.env.VITE_Infura })]
 );
 const config = createConfig(
   getDefaultConfig({
@@ -20,24 +21,27 @@ const config = createConfig(
     chains,
     appName: "ConnectKit",
     walletConnectProjectId: import.meta.env.VITE_Wallet_Id,
+    infuraId: import.meta.env.VITE_Infura,
     autoConnect: true,
   })
 );
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <WagmiConfig config={config}>
-      <ConnectKitProvider
-        theme="midnight"
-        debugMode
-        customTheme={{
-          "--ck-accent-color": "#4628dc",
-          "--ck-accent-text-color": "#ffffff",
-        }}
-      >
-        <Navbar />
-        <App />
-        <Footer />
-      </ConnectKitProvider>
-    </WagmiConfig>
+    <BrowserRouter>
+      <WagmiConfig config={config}>
+        <ConnectKitProvider
+          theme="midnight"
+          debugMode
+          customTheme={{
+            "--ck-accent-color": "#4628dc",
+            "--ck-accent-text-color": "#ffffff",
+          }}
+        >
+          <Navbar />
+          <App />
+          <Footer />
+        </ConnectKitProvider>
+      </WagmiConfig>
+    </BrowserRouter>
   </React.StrictMode>
 );

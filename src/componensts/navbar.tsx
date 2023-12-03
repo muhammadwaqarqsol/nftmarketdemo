@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +57,7 @@ function Navbar() {
             // href="/createNft"
             className="text-white-200 mr-8 mt-4 block cursor-pointer text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500 lg:mt-0 lg:inline-block"
           >
-            Create Nft
+            <Link to="/MintNft">Create Nft</Link>
           </a>
           <a
             href={`/OwnerNfts/ownerAddress`}
