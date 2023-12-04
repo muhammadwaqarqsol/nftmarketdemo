@@ -5,7 +5,6 @@ import { ConnectKitButton } from "connectkit";
 import logoImage from "../utilities/logoImage.png";
 import { Link } from "react-router-dom";
 
-
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +52,7 @@ function Navbar() {
             className={`text-white-200 mr-8 mt-4 block cursor-pointer text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500 lg:mt-0 lg:inline-block`}
             // onClick={() => router.push("/exploreNfts")}
           >
-            Explore Nfts
+            <Link to="/ExploreNfts">Explore Nfts</Link>
           </a>
           <a
             // href="/createNft"
