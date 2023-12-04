@@ -7,7 +7,15 @@ function App() {
   return (
     <>
       <div>
-        <div>Connected Wallet: {isConnected ? address : "Conect First"}</div>
+        <div>
+          {isConnected ? (
+            <p className="text-purple-600 font-bold">
+              Connected As : {address}
+            </p>
+          ) : (
+            <p className="text-red-500 font-bold">Connect First to Mint</p>
+          )}
+        </div>
         <Routes>
           <Route path="/"></Route>
           <Route path="/MintNft" element={<MintNFT />}></Route>

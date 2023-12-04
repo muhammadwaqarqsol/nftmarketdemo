@@ -3,10 +3,25 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageUploader from "../../utils/ImageUploadIpfs";
 import metaData from "../../utils/MetaDataUpload";
-import { useAccount, useWaitForTransaction } from "wagmi";
+import { sepolia, useAccount, useWaitForTransaction } from "wagmi";
 import { Link } from "react-router-dom";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import abi from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3.json";
+import { useNFTFunctionwriter } from "../../utils/hooks";
+import axios from "axios";
+import {
+  createWalletClient,
+  custom,
+  parseEther,
+  createPublicClient,
+  http,
+} from "viem";
+import { abi } from "../../abis/0x5281cFc34aF3b26C392281ee4537A734E467dD15";
+// import { useContractWrite, usePrepareContractWrite } from "wagmi";
+// import { abi } from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3";
+const client = createPublicClient({
+  chain: sepolia,
+  transport: http(),
+});
+
 interface DataObject {
   trait_type: string;
   value: string;
@@ -38,24 +53,51 @@ export const MintModal: React.FC<MintModalProps> = ({
   setData,
 }: MintModalProps) => {
   // Access the title prop and use it in your component
+  const [tokenId, setTokenId] = useState("");
   const { address, isConnected } = useAccount();
-  const [transactionerror, setTransactionerror] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [MetadataStatus, setMetadataStatus] = useState(false);
   const [ImageStatus, setImageStatus] = useState(false);
   const [Mintstatus, setMintstatus] = useState(false);
   const [tokenUri, setTokenUri] = useState<string>("");
 
-  const { config } = usePrepareContractWrite({
-    address: "0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3",
-    abi: abi,
-    functionName: "createToken",
-    args: [address, tokenUri],
-  });
-  const { data, writeAsync, isError } = useContractWrite(config);
+  let { writeAsync, data, isError, reset } = useNFTFunctionwriter(
+    "createToken",
+    [address, tokenUri]
+  );
+  // Assuming a specific type for the result, change 'SpecificType' to the actual type.
+  async function fetchData(): Promise<void> {
+    try {
+      const result = (await client.readContract({
+        address: "0x5281cFc34aF3b26C392281ee4537A734E467dD15",
+        abi: abi,
+        functionName: "_tokenId",
+      })) as string; // Assuming the result should be a string
+
+      setTokenId(result); // Update the state with the fetched data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
 
   let { isSuccess } = useWaitForTransaction({
     hash: data?.hash,
+    // onSuccess: async (data) => {
+    //   console.log("function before on success");
+    //   await axios
+    //     .post("http://localhost:5004/nfts/createnft", {
+    //       NftName,
+    //       Description,
+    //       ipfsHash,
+    //       ownerAddress,
+    //       contractAddress,
+    //       sellerAddress,
+    //       tokenId,
+    //       active,
+    //     })
+    //     .then((result) => console.log(result));
+    //   console.log("Function on success completed");
+    // },
   });
 
   async function mintNft() {
@@ -65,7 +107,6 @@ export const MintModal: React.FC<MintModalProps> = ({
       console.log("Transaction", tx?.hash);
     } catch (error: any) {
       console.log("Error >>>", error.message);
-      setTransactionerror("User Rejected The Request");
       setMintstatus(false);
     }
   }
@@ -95,12 +136,15 @@ export const MintModal: React.FC<MintModalProps> = ({
   };
 
   function cancelAll() {
+    isError = false;
+    reset();
     setShowModal(false);
     setTokenUri("");
     setMintstatus(false);
     setMetadataStatus(false);
     setImageStatus(false);
     setSelectedImage(null);
+    setData([]);
     setNftDetails({ NftName: "", Description: "" });
   }
   useEffect(() => {
@@ -115,8 +159,8 @@ export const MintModal: React.FC<MintModalProps> = ({
         setMintstatus(false);
         setMetadataStatus(false);
         setImageStatus(false);
-        setSelectedImage(null);
         setData([]);
+        setSelectedImage(null);
         setNftDetails({ NftName: "", Description: "" });
       }, 3000);
       console.log(getNftDetails);
@@ -169,7 +213,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                             Success
                           </p>
                         </div>
-                        <div>Uploading Image to Ipfs Done!.</div>
+                        <div>Image Uploaded!.</div>
                       </>
                     ) : (
                       <>
@@ -195,7 +239,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                             Loading...
                           </p>
                         </div>
-                        <div>Uploading Image to Ipfs</div>
+                        <div>Uploading Image</div>
                       </>
                     )}
                   </div>
@@ -209,7 +253,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                             Success
                           </p>
                         </div>
-                        <div>Uploading MetaData to Ipfs Done!.</div>
+                        <div>Uploading MetaData</div>
                       </>
                     ) : (
                       <>
@@ -235,7 +279,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                             Loading...
                           </p>
                         </div>
-                        <div>Uploading MetaData to Ipfs</div>
+                        <div>Metadata Uploaded!. </div>
                       </>
                     )}
                   </div>

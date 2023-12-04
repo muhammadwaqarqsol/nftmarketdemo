@@ -19,6 +19,9 @@ function mintingpage() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
   const addObject = () => {
+    if (newObject.trait_type.trim() === "" || newObject.value.trim() === "") {
+      return;
+    }
     if (editIndex !== null) {
       setData((prevData) => {
         const newData = [...prevData];
@@ -92,16 +95,16 @@ function mintingpage() {
   };
 
   useEffect(() => {
-    // Check if both fields are filled
     setIsFormValid(
       getNftDetails.NftName.trim() !== "" &&
         getNftDetails.Description.trim() !== "" &&
-        isImageSelected
+        isImageSelected &&
+        data.length > 0
     );
-  }, [getNftDetails, isImageSelected]);
+  }, [getNftDetails, isImageSelected, data]);
 
   return (
-    <main className=" mt-16 flex scroll-m-0 flex-row items-center justify-center">
+    <main className=" mt-16 flex scroll-m-0 flex-row  justify-center m-4 p-4">
       <div>
         {selectedImage && (
           <div
@@ -111,13 +114,10 @@ function mintingpage() {
             <img
               src={imageUrl} // Use the memoized imageUrl here
               alt="Selected"
-              className="selected-image border-dotted" // Add the class for the border here
+              className="selected-image border-dotted mb-3" // Add the class for the border here
               style={{ maxWidth: "500px", maxHeight: "250px" }}
             />
-            <button
-              className="rounded-full bg-red-500 px-4 py-2 font-bold text-white hover:bg-blue-700 mt-3"
-              onClick={handleRemoveImage}
-            >
+            <button className="btn" onClick={handleRemoveImage}>
               Delete
             </button>
           </div>
@@ -127,7 +127,7 @@ function mintingpage() {
         {!selectedImage && (
           <div
             style={{ height: "300px", width: "500px" }}
-            className="flex flex-col justify-center border-2 border-dashed border-black font-extrabold"
+            className="flex flex-col justify-center border-2 border-dashed border-white font-extrabold"
           >
             <div className="flex flex-col items-center justify-center">
               <p className="p-6">Upload Images or GIFs</p>
@@ -148,7 +148,7 @@ function mintingpage() {
         )}
       </div>
       <br></br>
-      <div>
+      <div className="m-4">
         <div className="mb-6 md:flex md:items-center">
           <div className="md:w-1/3">
             <label className="mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right">
@@ -194,21 +194,21 @@ function mintingpage() {
                 marginBottom: "10px",
               }}
             >
-              <div style={{ marginRight: "20px" }}>
-                <h3>{obj.trait_type}</h3>
-                <p>{obj.value}</p>
+              <div style={{ marginRight: "20px" }} className="flex flex-row">
+                <h3 className="mr-3"> trait_type : {obj.trait_type}</h3>
+                <p> Value : {obj.value}</p>
               </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <button
-                  className="rounded-lg mt-3 bg-purple-500 px-4 py-2 font-bold text-white hover:bg-blue-500 disabled:bg-slate-200"
-                  onClick={() => editObject(index)}
-                >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginRight: "20px",
+                }}
+              >
+                <button className="btn m-3" onClick={() => editObject(index)}>
                   Edit
                 </button>
-                <button
-                  className="rounded-lg mt-3 bg-purple-500 px-4 py-2 font-bold text-white hover:bg-red-500 disabled:bg-slate-200"
-                  onClick={() => removeObject(index)}
-                >
+                <button className="btn m-3" onClick={() => removeObject(index)}>
                   Remove
                 </button>
               </div>
@@ -223,6 +223,7 @@ function mintingpage() {
                 className="mr-2 w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:outline-none focus:ring focus:ring-purple-500 focus:ring-opacity-50"
                 value={newObject.trait_type}
                 onChange={handleInputChange}
+                required
               />
               <input
                 type="text"
@@ -231,12 +232,10 @@ function mintingpage() {
                 className="mr-2 w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:outline-none focus:ring focus:ring-purple-500 focus:ring-opacity-50"
                 value={newObject.value}
                 onChange={handleInputChange}
+                required
               />
             </div>
-            <button
-              onClick={addObject}
-              className="rounded-lg mt-3 mb-3 bg-purple-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:bg-slate-200"
-            >
+            <button onClick={addObject} className="btn m-3 justify-center">
               {editIndex !== null ? "Update Object" : "Add Attribute"}
             </button>
           </div>
