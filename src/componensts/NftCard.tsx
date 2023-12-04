@@ -1,0 +1,52 @@
+import React, { useState } from "react";
+import { useAccount } from "wagmi";
+import nft from "../utilities/auction-11.jpg";
+
+type AppProps = {
+  title: string;
+  src: string | any;
+  ownerAddress: any | null;
+  id: string;
+};
+const NftCard = (props: AppProps) => {
+  const { address } = useAccount();
+
+  return (
+    <div className="card explore-card">
+      <figure className="card-banner">
+        <a>
+          <img
+            src={nft}
+            width="600"
+            height="600"
+            loading="lazy"
+            alt="Walking On Air"
+            className="img-cover"
+          />
+        </a>
+      </figure>
+
+      <h3 className="h3 card-title">
+        <a>{props.title}</a>
+      </h3>
+
+      <span className="card-author">
+        Owned By{" "}
+        <a className="author-link">
+          {props.ownerAddress?.slice(0, 8) +
+            "..." +
+            props.ownerAddress?.slice(35, 45)}
+        </a>
+      </span>
+
+      <div className="wrapper">
+        <span className="wrapper-item">1 of 1</span>
+        <button className="btn">
+          <span>Details</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default NftCard;
