@@ -56,8 +56,8 @@ function mintingpage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(); // To store the selected image URL
   //IMAGE nft name
   const [getNftDetails, setNftDetails] = useState({
-    NftName: "",
-    Description: "",
+    title: "",
+    description: "",
   });
   const imageUrl = useMemo(() => {
     if (selectedImage) {
@@ -96,8 +96,8 @@ function mintingpage() {
 
   useEffect(() => {
     setIsFormValid(
-      getNftDetails.NftName.trim() !== "" &&
-        getNftDetails.Description.trim() !== "" &&
+      getNftDetails.title.trim() !== "" &&
+        getNftDetails.description.trim() !== "" &&
         isImageSelected &&
         data.length > 0
     );
@@ -159,8 +159,8 @@ function mintingpage() {
             <input
               type="text"
               onChange={handleChange}
-              value={getNftDetails.NftName}
-              name="NftName"
+              value={getNftDetails.title}
+              name="title"
               placeholder="insert NFT name"
               className="mr-2 w-full appearance-none rounded border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:outline-none focus:ring focus:ring-purple-500 focus:ring-opacity-50"
               required
@@ -176,8 +176,8 @@ function mintingpage() {
           <div className="md:w-2/3">
             <textarea
               onChange={handleChange}
-              value={getNftDetails.Description}
-              name="Description"
+              value={getNftDetails.description}
+              name="description"
               className="resize-y border rounded w-full h-32 px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:border-purple-500"
               placeholder="Description"
               required

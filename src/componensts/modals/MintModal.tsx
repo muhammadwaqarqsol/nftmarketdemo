@@ -17,6 +17,14 @@ import {
 import { abi } from "../../abis/0x5281cFc34aF3b26C392281ee4537A734E467dD15";
 // import { useContractWrite, usePrepareContractWrite } from "wagmi";
 // import { abi } from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3";
+type NftData = {
+  title: string;
+  description: string;
+  ipfsHash: string;
+  ownerAddress: string;
+  tokenId: string; // or string, depending on your use case
+  attributes: Array<Object>; // or define a specific type for attributes if known
+};
 const client = createPublicClient({
   chain: sepolia,
   transport: http(),
@@ -29,8 +37,8 @@ interface DataObject {
 interface MintModalProps {
   selectedImage: File | null | undefined;
   getNftDetails: {
-    NftName: string;
-    Description: string;
+    title: string;
+    description: string;
   };
   isFormValid: boolean;
   attributes: any;
@@ -39,7 +47,7 @@ interface MintModalProps {
   >;
   setData: React.Dispatch<React.SetStateAction<DataObject[]>>;
   setNftDetails: React.Dispatch<
-    React.SetStateAction<{ NftName: string; Description: string }>
+    React.SetStateAction<{ title: string; description: string }>
   >;
 }
 
@@ -53,8 +61,9 @@ export const MintModal: React.FC<MintModalProps> = ({
   setData,
 }: MintModalProps) => {
   // Access the title prop and use it in your component
+  const [ipfsHash, setIpfshash] = useState("");
   const [tokenId, setTokenId] = useState("");
-  const { address, isConnected } = useAccount();
+  const { address: ownerAddress, isConnected } = useAccount();
   const [showModal, setShowModal] = useState(false);
   const [MetadataStatus, setMetadataStatus] = useState(false);
   const [ImageStatus, setImageStatus] = useState(false);
@@ -63,7 +72,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   let { writeAsync, data, isError, reset } = useNFTFunctionwriter(
     "createToken",
-    [address, tokenUri]
+    [ownerAddress, tokenUri]
   );
   // Assuming a specific type for the result, change 'SpecificType' to the actual type.
   async function fetchData(): Promise<void> {
@@ -71,10 +80,11 @@ export const MintModal: React.FC<MintModalProps> = ({
       const result = (await client.readContract({
         address: "0x5281cFc34aF3b26C392281ee4537A734E467dD15",
         abi: abi,
-        functionName: "_tokenId",
+        functionName: "_tokenIds",
       })) as string; // Assuming the result should be a string
 
       setTokenId(result); // Update the state with the fetched data
+      console.log(Number(result).toString());
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -82,22 +92,31 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   let { isSuccess } = useWaitForTransaction({
     hash: data?.hash,
-    // onSuccess: async (data) => {
-    //   console.log("function before on success");
-    //   await axios
-    //     .post("http://localhost:5004/nfts/createnft", {
-    //       NftName,
-    //       Description,
-    //       ipfsHash,
-    //       ownerAddress,
-    //       contractAddress,
-    //       sellerAddress,
-    //       tokenId,
-    //       active,
-    //     })
-    //     .then((result) => console.log(result));
-    //   console.log("Function on success completed");
-    // },
+    onSuccess: () => {
+      fetchData();
+      console.log(
+        getNftDetails.title, //need to check becuase after success it might become empty
+        getNftDetails.description, //need to check because after success it might become empty
+        Number(tokenId).toString(),
+        ownerAddress,
+        attributes
+      );
+      setData([]);
+      setNftDetails({ title: "", description: "" });
+      // await axios
+      //   .post("http://localhost:5004/nfts/createnft", {
+      //     NftName,
+      //     Description,
+      //     ipfsHash,
+      //     ownerAddress,
+      //     contractAddress,
+      //     sellerAddress,
+      //     tokenId,
+      //     active,
+      //   })
+      //   .then((result) => console.log(result));
+      // console.log("Function on success completed");
+    },
   });
 
   async function mintNft() {
@@ -115,15 +134,16 @@ export const MintModal: React.FC<MintModalProps> = ({
     console.log(selectedImage, getNftDetails);
     const uploadImages = await ImageUploader(
       selectedImage,
-      getNftDetails.NftName
+      getNftDetails.title
     );
     console.log(uploadImages?.status);
     if (uploadImages?.status === 200) {
       setImageStatus(true);
     }
+    setIpfshash(uploadImages?.IpfshashImage);
     const metadatares = await metaData(
-      getNftDetails.NftName,
-      getNftDetails.Description,
+      getNftDetails.title,
+      getNftDetails.description,
       uploadImages?.IpfshashImage,
       attributes
     );
@@ -145,7 +165,7 @@ export const MintModal: React.FC<MintModalProps> = ({
     setImageStatus(false);
     setSelectedImage(null);
     setData([]);
-    setNftDetails({ NftName: "", Description: "" });
+    setNftDetails({ title: "", description: "" });
   }
   useEffect(() => {
     if (isSuccess) {
@@ -159,9 +179,7 @@ export const MintModal: React.FC<MintModalProps> = ({
         setMintstatus(false);
         setMetadataStatus(false);
         setImageStatus(false);
-        setData([]);
         setSelectedImage(null);
-        setNftDetails({ NftName: "", Description: "" });
       }, 3000);
       console.log(getNftDetails);
     }
@@ -176,6 +194,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   return (
     <React.Fragment>
+      <button onClick={() => fetchData()}>Fetch</button>
       {isConnected ? (
         <button
           disabled={!isFormValid || showModal}

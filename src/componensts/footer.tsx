@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logoImage from "../utilities/logoImage.png";
 
 const Footer = () => {
@@ -8,7 +9,9 @@ const Footer = () => {
         <div className="footer-top">
           <div className="footer-brand">
             <a href="#" className="logo">
-              <img src={logoImage} className="h-15 mr-2 w-80" alt="" />
+              <Link to="/">
+                <img src={logoImage} className="h-15 mr-2 w-80" alt="" />
+              </Link>
             </a>
 
             <p className="footer-text">
@@ -68,7 +71,9 @@ const Footer = () => {
             </li>
 
             <li>
-              <a className="footer-link">All NFTs</a>
+              <a className="footer-link">
+                <Link to="/ExploreNfts">All NFTs</Link>
+              </a>
             </li>
 
             {/* <li>
@@ -78,11 +83,15 @@ const Footer = () => {
             </li> */}
 
             <li>
-              <a className="footer-link">Create</a>
+              <a className="footer-link">
+                <Link to="/MintNft">Create</Link>
+              </a>
             </li>
 
             <li>
-              <a className="footer-link">Explore</a>
+              <a className="footer-link">
+                <Link to="/">Explore</Link>
+              </a>
             </li>
 
             {/* <li>

@@ -4,10 +4,41 @@ import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
 import logoImage from "../utilities/logoImage.png";
 import { Link } from "react-router-dom";
+import CreateProfileModal from "../pages/CreateProfile";
+import Profile from "./Profile";
+import axios from "axios";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { address, isConnected } = useAccount();
+  const [data, setData] = useState<any>({});
+  const [openProfile, setOpenProfile] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+   const fetchUser = async () => {
+     try {
+       axios
+         .get(`http://localhost:5004/users/getsingleuser/${address}`)
+         .then((res:any) => {
+           console.log(res);
+           setData(res.data);
+           // res.data ? console.log(res) : setOpenModal(!openModal);
+           isConnected
+             ? res.data
+               ? console.log(res)
+               : setOpenModal(!openModal)
+             : setOpenModal(false);
+         });
+     } catch (error) {
+       console.log(error);
+     }
+   };
 
+   useEffect(() => {
+    if(address!==undefined){
+      localStorage.setItem("address", address);
+      fetchUser();
+    }
+   }, [address]);
   return (
     <nav className="flex flex-wrap items-center justify-between p-6">
       <div className="mr-6 flex flex-shrink-0 items-center text-white lg:mr-72">
@@ -18,7 +49,13 @@ function Navbar() {
           className="h-15 mr-2 w-80 cursor-pointer"
           alt="Logo"
         ></Image> */}
-        <img src={logoImage} className="h-15 mr-2 w-80 cursor-pointer" alt="" />
+        <Link to="/ExploreNfts">
+          <img
+            src={logoImage}
+            className="h-15 mr-2 w-80 cursor-pointer"
+            alt=""
+          />
+        </Link>
       </div>
       <div className="block lg:hidden">
         <button
@@ -66,40 +103,36 @@ function Navbar() {
             text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500
             lg:mt-0 lg:inline-block"
           >
-            My Nfts
+            <Link to="/MyNfts">My Nfts</Link>
           </a>
-          {/* {data ? (
-            <a
-              // href=""
-              className="text-white-200 mr-4 mt-4 block text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500 lg:mt-0 lg:inline-block"
-            >
-              <Menubar className="w-[90px]">
-                <MenubarMenu>
-                  <MenubarTrigger className="cursor-pointer border-0 text-[1.6rem] font-bold">
-                    Profile
-                  </MenubarTrigger>
-                  <MenubarContent>
-                    <MenubarRadioItem value="andy" className="text-[1.3rem]">
-                      {name}
-                    </MenubarRadioItem>
-                    <MenubarRadioItem value="benoit" className="text-[1.3rem]">
-                      {email}
-                    </MenubarRadioItem>
-                    <MenubarRadioItem value="Luis" className="text-[1.3rem]">
-                      {walletAddress}
-                    </MenubarRadioItem>
-                  </MenubarContent>
-                </MenubarMenu>
-              </Menubar>
-            </a>
-          ) : (
-            ""
-          )} */}
+          <div
+            className="text-white-200 mr-8 mt-4 block cursor-pointer
+            text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500
+            lg:mt-0 lg:inline-block
+            navbar-menu-content"
+          >
+            {isConnected ? (
+              data ? (
+                <a
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setOpenProfile(!openProfile)}
+                >
+                  Profile
+                </a>
+              ) : (
+                <></>
+              )
+            ) : (
+              ""
+            )}
+          </div>
         </div>
         <div>
           <ConnectKitButton />
         </div>
       </div>
+      {openProfile && <Profile />}
+      {openModal && <CreateProfileModal />}
     </nav>
   );
 }
