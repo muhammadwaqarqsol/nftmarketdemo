@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
+import logoImage from "../utilities/logoImage.png";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +17,7 @@ function Navbar() {
           className="h-15 mr-2 w-80 cursor-pointer"
           alt="Logo"
         ></Image> */}
-        <img src="" alt="" />
+        <img src={logoImage} className="h-15 mr-2 w-80 cursor-pointer" alt="" />
       </div>
       <div className="block lg:hidden">
         <button

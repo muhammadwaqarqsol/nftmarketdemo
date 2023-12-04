@@ -1,15 +1,14 @@
 import "./App.css";
 import { ConnectKitButton } from "connectkit";
 import { useAccount } from "wagmi";
+import Hero from "./componensts/hero";
+import NftCardContainer from "./componensts/NftCardContainer";
 
 function App() {
-  const { address, isConnected } = useAccount();
   return (
     <>
-      <div>
-        {/* <ConnectKitButton /> */}
-        <div>Connected Wallet: {isConnected ? address : "Conect First"}</div>
-      </div>
+      <Hero />
+      <NftCardContainer />
     </>
   );
 }

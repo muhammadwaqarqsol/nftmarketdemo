@@ -1,4 +1,4 @@
-import React from "react";
+import logoImage from "../utilities/logoImage.png";
 
 const Footer = () => {
   // const { isConnected, address } = useAccount();
@@ -8,13 +8,7 @@ const Footer = () => {
         <div className="footer-top">
           <div className="footer-brand">
             <a href="#" className="logo">
-              {/* <img src="./assets/images/logo.svg" width="68" height="48" alt="NFTC Logo"> */}
-              {/* <Image
-                src={logoImage}
-                className="h-15 mr-2 w-80"
-                alt="Logo"
-              ></Image> */}
-              <img src="" alt="" />
+              <img src={logoImage} className="h-15 mr-2 w-80" alt="" />
             </a>
 
             <p className="footer-text">
