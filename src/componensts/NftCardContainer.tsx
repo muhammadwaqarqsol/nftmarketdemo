@@ -1,10 +1,41 @@
 import React from "react";
 import NftCard from "./NftCard";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useAccount } from "wagmi";
+
+type NftData = {
+  title: string;
+  _id: string;
+  description: string;
+  ipfsHash: string;
+  ownerAddress: string;
+  tokenId: string; // or string, depending on your use case
+  attributes: Array<Object>; // or define a specific type for attributes if known
+};
 
 const NftCardContainer = () => {
   const { isConnected } = useAccount();
+  const [data, setData] = useState<NftData[]>([]);
+  async function fetchData() {
+    try {
+      await axios.get("http://localhost:5004/nfts/getallnfts").then((res) => {
+        console.log("Res", res.data);
+        setData(res.data);
+      });
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+  // console.log(data[0]);
+  // fetchData();
+  useEffect(() => {
+    console.log("check", data);
+    if (data.length === 0) {
+      // console.log("check");
+      fetchData();
+    }
+  }, [data]);
 
   return (
     <section className="section explore" id="explore">
@@ -15,7 +46,7 @@ const NftCardContainer = () => {
           <h2 className="h2 section-title">Explore</h2>
         </div>
 
-        {/* <ul className="grid-list">
+        <ul className="grid-list">
           {data?.map((e, i) => {
             return (
               <li key={i}>
@@ -23,39 +54,12 @@ const NftCardContainer = () => {
                   src={e.ipfsHash}
                   title={e.title}
                   ownerAddress={e.ownerAddress}
-                  price={e.price}
-                  active={e.active}
-                  id={e.id}
+                  _id={e._id}
+                  ipfsHash={e.ipfsHash}
                 />
               </li>
             );
           })}
-        </ul> */}
-        <ul className="grid-list">
-          <li>
-            <NftCard
-              src={"www.helloWorld.com"}
-              title={"Hello Man"}
-              ownerAddress={"0x00000000000000000000000000000000000000000000"}
-              id={"1"}
-            />
-          </li>
-          <li>
-            <NftCard
-              src={"www.helloWorld.com"}
-              title={"Hello Man"}
-              ownerAddress={"0x00000000000000000000000000000000000000000000"}
-              id={"1"}
-            />
-          </li>
-          <li>
-            <NftCard
-              src={"www.helloWorld.com"}
-              title={"Hello Man"}
-              ownerAddress={"0x00000000000000000000000000000000000000000000"}
-              id={"1"}
-            />
-          </li>
         </ul>
       </div>
     </section>

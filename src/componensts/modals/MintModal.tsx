@@ -7,24 +7,9 @@ import { sepolia, useAccount, useWaitForTransaction } from "wagmi";
 import { Link } from "react-router-dom";
 import { useNFTFunctionwriter } from "../../utils/hooks";
 import axios from "axios";
-import {
-  createWalletClient,
-  custom,
-  parseEther,
-  createPublicClient,
-  http,
-} from "viem";
+import { createPublicClient, http } from "viem";
 import { abi } from "../../abis/0x5281cFc34aF3b26C392281ee4537A734E467dD15";
-// import { useContractWrite, usePrepareContractWrite } from "wagmi";
-// import { abi } from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3";
-// type NftData = {
-//   title: string;
-//   description: string;
-//   ipfsHash: string;
-//   ownerAddress: string;
-//   tokenId: string; // or string, depending on your use case
-//   attributes: Array<Object>; // or define a specific type for attributes if known
-// };
+
 const client = createPublicClient({
   chain: sepolia,
   transport: http(),
@@ -60,9 +45,7 @@ export const MintModal: React.FC<MintModalProps> = ({
   attributes,
   setData,
 }: MintModalProps) => {
-  // Access the title prop and use it in your component
   const [ipfsHash, setIpfshash] = useState("");
-  const [tokenId, setTokenId] = useState<Number>();
   const { address: ownerAddress, isConnected } = useAccount();
   const [showModal, setShowModal] = useState(false);
   const [MetadataStatus, setMetadataStatus] = useState(false);
@@ -75,14 +58,15 @@ export const MintModal: React.FC<MintModalProps> = ({
     [ownerAddress, tokenUri]
   );
   // Assuming a specific type for the result, change 'SpecificType' to the actual type.
-  async function fetchData(): Promise<void> {
+  async function fetchData() {
     try {
       const result = (await client.readContract({
         address: "0x5281cFc34aF3b26C392281ee4537A734E467dD15",
         abi: abi,
         functionName: "_tokenIds",
       })) as string; // Assuming the result should be a string
-      setTokenId(Number(result) + 1); // Update the state with the fetched data
+      let value = Number(result) + 1;
+      return value;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -91,7 +75,7 @@ export const MintModal: React.FC<MintModalProps> = ({
   let { isSuccess } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess: async () => {
-      await fetchData();
+      let tokenId = await fetchData();
       let title = getNftDetails.title;
       let description = getNftDetails.description;
       console.log(
@@ -115,6 +99,16 @@ export const MintModal: React.FC<MintModalProps> = ({
       console.log("Function on success completed");
       setData([]);
       setNftDetails({ title: "", description: "" });
+      toast("Mint Successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     },
   });
 
@@ -198,7 +192,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   return (
     <React.Fragment>
-      {/* <button onClick={get}>Fetch</button> */}
+      {/* <button onClick={() => fetchData()}>Fetch</button> */}
       {isConnected ? (
         <button
           disabled={!isFormValid || showModal}
@@ -219,19 +213,19 @@ export const MintModal: React.FC<MintModalProps> = ({
           <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
             <div>
               {/*content*/}
-              <div className="relative flex w-full flex-col rounded-lg border-0 bg-white p-10 shadow-lg outline-none focus:outline-none">
+              <div className="relative flex w-full flex-col rounded-lg border-0 bg-[#4628dc] p-10 shadow-lg outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-center justify-center rounded-t border-b border-solid border-slate-200 p-5">
                   <h3 className="text-3xl font-semibold">Minting Process</h3>
                 </div>
                 {/*body*/}
-                <div className="flex flex-col">
+                <div className="flex flex-col mt-10">
                   <div className="flex flex-row items-center justify-center">
                     {ImageStatus ? (
                       <>
                         {" "}
                         <div className="flex flex-row items-center justify-center">
-                          <img src="svgtick.svg" className="h-8" />
+                          <img src="svgtick.svg" className="h-8" alt="" />
                           <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default">
                             Success
                           </p>
@@ -258,7 +252,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>
@@ -271,8 +265,8 @@ export const MintModal: React.FC<MintModalProps> = ({
                       <>
                         {" "}
                         <div className="flex flex-row items-center justify-center">
-                          <img src="svgtick.svg" className="h-8" />
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default">
+                          <img src="svgtick.svg" className="h-8" alt="" />
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default text-[1.3rem]">
                             Success
                           </p>
                         </div>
@@ -298,7 +292,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>
@@ -311,8 +305,8 @@ export const MintModal: React.FC<MintModalProps> = ({
                     {isError ? (
                       <>
                         <div className="flex flex-row items-center justify-center">
-                          <img src="cancel.svg" className="h-8" />
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default">
+                          <img src="cancel.svg" className="h-8" alt="" />
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default text-[1.5rem]">
                             Erro on Transaction
                           </p>
                         </div>
@@ -324,7 +318,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                       <>
                         {" "}
                         <div className="flex flex-row items-center justify-center">
-                          <img src="svgtick.svg" className="h-8" />
+                          <img src="svgtick.svg" className="h-8" alt="" />
                           <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default">
                             Success
                           </p>
@@ -351,7 +345,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>
@@ -362,7 +356,10 @@ export const MintModal: React.FC<MintModalProps> = ({
 
                   {Mintstatus && MetadataStatus && ImageStatus && (
                     <div className="flex items-center justify-center">
-                      <Link to="/mynfts" className="text-blue-300 underline">
+                      <Link
+                        to={`/MyNfts/${ownerAddress}`}
+                        className="text-blue-300 underline"
+                      >
                         Go to My NFT
                       </Link>
                     </div>
