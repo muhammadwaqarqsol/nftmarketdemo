@@ -35,13 +35,13 @@ export default {
 
 18.14.0
 
-# Running Project
+# Running the Project
 
 - npm i //installing the dependencies
 - npm run dev //to start the project
 
 # ENV Required variables
 
-- Infure or alchemy Key
+- Infure and alchemy Key
 - connectwallet Id for QR scan wallet connect
-- pinata key
+- pinata JWT
