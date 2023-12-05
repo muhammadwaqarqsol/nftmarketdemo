@@ -1,6 +1,7 @@
 // import { ConnectButton } from "@rainbow-me/rainbowkit";
 // import { useRouter } from "next/router";
 // import { api } from "~/utils/api";
+import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 // import StripeCheckOutButton from "../stripeComponents/checkout";
 // import Link from "next/link";
@@ -39,7 +40,9 @@ export default function Hero() {
           <div className="btn-group">
             {/* <Link href={"/BuyTokens"}> */}
             <button className="btn">
-              <span>Create Your Own Nft</span>
+              <Link to="/MintNft">
+                <span>Create Your Own Nft</span>
+              </Link>
             </button>
             {/* </Link> */}
 
