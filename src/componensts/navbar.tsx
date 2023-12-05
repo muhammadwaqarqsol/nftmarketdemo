@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
 import logoImage from "../utilities/logoImage.png";
 import { Link } from "react-router-dom";
-import CreateProfileModal from "../pages/CreateProfile";
+import CreateProfileModal from "./CreateProfile";
 import Profile from "./Profile";
 import axios from "axios";
 
@@ -14,42 +14,41 @@ function Navbar() {
   const [data, setData] = useState<any>({});
   const [openProfile, setOpenProfile] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-   const fetchUser = async () => {
-     try {
-       axios
-         .get(`http://localhost:5004/users/getsingleuser/${address}`)
-         .then((res:any) => {
-           console.log(res);
-           setData(res.data);
-           // res.data ? console.log(res) : setOpenModal(!openModal);
-           isConnected
-             ? res.data
-               ? console.log(res)
-               : setOpenModal(!openModal)
-             : setOpenModal(false);
-         });
-     } catch (error) {
-       console.log(error);
-     }
-   };
+  const fetchUser = async () => {
+    try {
+      axios
+        .get(`http://localhost:5004/users/getsingleuser/${address}`)
+        .then((res: any) => {
+          console.log("user res", res);
+          setData(res.data);
+          res.data ? console.log(res) : setOpenModal(!openModal);
+          isConnected
+            ? res.data?.length !== 0
+              ? console.log(res)
+              : setOpenModal(!openModal)
+            : setOpenModal(true);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-   useEffect(() => {
-    if(address!==undefined){
+  useEffect(() => {
+    // isConnected
+    //   ? data?.length !== 0
+    //     ? console.log("res effect")
+    //     : setOpenModal(!openModal)
+    //   : setOpenModal(true);
+    if (address !== undefined) {
       localStorage.setItem("address", address);
+      console.log("Hello");
       fetchUser();
     }
-   }, [address]);
+  }, [address]);
   return (
     <nav className="flex flex-wrap items-center justify-between p-6">
       <div className="mr-6 flex flex-shrink-0 items-center text-white lg:mr-72">
-        {/* <img src={logoImage} className="w-100 mr-2 h-10" alt="Logo" /> */}
-        {/* <Image
-          onClick={() => router.push("/")}
-          src={logoImage}
-          className="h-15 mr-2 w-80 cursor-pointer"
-          alt="Logo"
-        ></Image> */}
-        <Link to="/ExploreNfts">
+        <Link to="/">
           <img
             src={logoImage}
             className="h-15 mr-2 w-80 cursor-pointer"
@@ -98,12 +97,11 @@ function Navbar() {
             <Link to="/MintNft">Create Nft</Link>
           </a>
           <a
-            href={`/OwnerNfts/ownerAddress`}
             className="text-white-200 mr-8 mt-4 block cursor-pointer
             text-[1.6rem] font-bold hover:text-purple-600 active:text-red-500
             lg:mt-0 lg:inline-block"
           >
-            <Link to="/MyNfts">My Nfts</Link>
+            <Link to={`/MyNfts/${address}`}>My Nfts</Link>
           </a>
           <div
             className="text-white-200 mr-8 mt-4 block cursor-pointer

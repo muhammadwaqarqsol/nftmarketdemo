@@ -69,6 +69,7 @@ export const MintModal: React.FC<MintModalProps> = ({
   const [ImageStatus, setImageStatus] = useState(false);
   const [Mintstatus, setMintstatus] = useState(false);
   const [tokenUri, setTokenUri] = useState<string>("");
+  // const [attributes,setAttributes] = useState<Array>([{}])
 
   let { writeAsync, data, isError, reset } = useNFTFunctionwriter(
     "createToken",
@@ -103,19 +104,17 @@ export const MintModal: React.FC<MintModalProps> = ({
       );
       setData([]);
       setNftDetails({ title: "", description: "" });
+
       // await axios
       //   .post("http://localhost:5004/nfts/createnft", {
-      //     NftName,
-      //     Description,
+      //     title,
+      //     description,
       //     ipfsHash,
       //     ownerAddress,
-      //     contractAddress,
-      //     sellerAddress,
       //     tokenId,
-      //     active,
+      //      attributes
       //   })
       //   .then((result) => console.log(result));
-      // console.log("Function on success completed");
     },
   });
 
@@ -215,13 +214,13 @@ export const MintModal: React.FC<MintModalProps> = ({
           <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
             <div>
               {/*content*/}
-              <div className="relative flex w-full flex-col rounded-lg border-0 bg-white p-10 shadow-lg outline-none focus:outline-none">
+              <div className="relative flex w-full flex-col rounded-lg border-0 bg-[#4628dc] p-10 shadow-lg outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-center justify-center rounded-t border-b border-solid border-slate-200 p-5">
                   <h3 className="text-3xl font-semibold">Minting Process</h3>
                 </div>
                 {/*body*/}
-                <div className="flex flex-col">
+                <div className="flex flex-col mt-10">
                   <div className="flex flex-row items-center justify-center">
                     {ImageStatus ? (
                       <>
@@ -254,7 +253,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>
@@ -268,7 +267,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                         {" "}
                         <div className="flex flex-row items-center justify-center">
                           <img src="svgtick.svg" className="h-8" />
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-green-400 hover:cursor-default text-[1.3rem]">
                             Success
                           </p>
                         </div>
@@ -294,7 +293,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>
@@ -308,7 +307,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                       <>
                         <div className="flex flex-row items-center justify-center">
                           <img src="cancel.svg" className="h-8" />
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default text-[1.3rem]">
                             Erro on Transaction
                           </p>
                         </div>
@@ -347,7 +346,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                               fill="currentColor"
                             ></path>
                           </svg>
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-black hover:cursor-default text-[1.5rem]">
                             Loading...
                           </p>
                         </div>

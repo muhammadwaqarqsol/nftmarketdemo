@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useAccount } from "wagmi";
-import nft from "../utilities/auction-11.jpg";
+// import nft from "../utilities/auction-11.jpg";
+import { Link } from "react-router-dom";
 
 type AppProps = {
   title: string;
   src: string | any;
   ownerAddress: any | null;
-  id: string;
+  _id: string;
+  ipfsHash: string;
 };
 const NftCard = (props: AppProps) => {
   const { address } = useAccount();
@@ -16,7 +18,7 @@ const NftCard = (props: AppProps) => {
       <figure className="card-banner">
         <a>
           <img
-            src={nft}
+            src={`https://ipfs.io/ipfs/${props.ipfsHash}`}
             width="600"
             height="600"
             loading="lazy"
@@ -41,9 +43,11 @@ const NftCard = (props: AppProps) => {
 
       <div className="wrapper">
         <span className="wrapper-item">1 of 1</span>
-        <button className="btn">
-          <span>Details</span>
-        </button>
+        <Link to={`/${props._id}`}>
+          <button className="btn">
+            <span>Details</span>
+          </button>
+        </Link>
       </div>
     </div>
   );
