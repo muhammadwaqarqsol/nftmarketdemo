@@ -7,13 +7,7 @@ import { sepolia, useAccount, useWaitForTransaction } from "wagmi";
 import { Link } from "react-router-dom";
 import { useNFTFunctionwriter } from "../../utils/hooks";
 import axios from "axios";
-import {
-  createWalletClient,
-  custom,
-  parseEther,
-  createPublicClient,
-  http,
-} from "viem";
+import { createPublicClient, http } from "viem";
 import { abi } from "../../abis/0x5281cFc34aF3b26C392281ee4537A734E467dD15";
 // import { useContractWrite, usePrepareContractWrite } from "wagmi";
 // import { abi } from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3";
@@ -60,30 +54,28 @@ export const MintModal: React.FC<MintModalProps> = ({
   attributes,
   setData,
 }: MintModalProps) => {
-  // Access the title prop and use it in your component
   const [ipfsHash, setIpfshash] = useState("");
-  const [tokenId, setTokenId] = useState<Number>();
   const { address: ownerAddress, isConnected } = useAccount();
   const [showModal, setShowModal] = useState(false);
   const [MetadataStatus, setMetadataStatus] = useState(false);
   const [ImageStatus, setImageStatus] = useState(false);
   const [Mintstatus, setMintstatus] = useState(false);
   const [tokenUri, setTokenUri] = useState<string>("");
-  // const [attributes,setAttributes] = useState<Array>([{}])
 
   let { writeAsync, data, isError, reset } = useNFTFunctionwriter(
     "createToken",
     [ownerAddress, tokenUri]
   );
   // Assuming a specific type for the result, change 'SpecificType' to the actual type.
-  async function fetchData(): Promise<void> {
+  async function fetchData() {
     try {
       const result = (await client.readContract({
         address: "0x5281cFc34aF3b26C392281ee4537A734E467dD15",
         abi: abi,
         functionName: "_tokenIds",
       })) as string; // Assuming the result should be a string
-      setTokenId(Number(result) + 1); // Update the state with the fetched data
+      let value = Number(result) + 1;
+      return value;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -92,7 +84,7 @@ export const MintModal: React.FC<MintModalProps> = ({
   let { isSuccess } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess: async () => {
-      await fetchData();
+      let tokenId = await fetchData();
       let title = getNftDetails.title;
       let description = getNftDetails.description;
       console.log(
@@ -116,6 +108,16 @@ export const MintModal: React.FC<MintModalProps> = ({
       console.log("Function on success completed");
       setData([]);
       setNftDetails({ title: "", description: "" });
+      toast("Mint Successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     },
   });
 
@@ -199,7 +201,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   return (
     <React.Fragment>
-      {/* <button onClick={get}>Fetch</button> */}
+      {/* <button onClick={() => fetchData()}>Fetch</button> */}
       {isConnected ? (
         <button
           disabled={!isFormValid || showModal}
@@ -313,7 +315,7 @@ export const MintModal: React.FC<MintModalProps> = ({
                       <>
                         <div className="flex flex-row items-center justify-center">
                           <img src="cancel.svg" className="h-8" />
-                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default text-[1.3rem]">
+                          <p className="focus:outline-nonefont-medium  mr-2 inline-flex items-center rounded px-5 py-2.5 text-center text-sm text-red-400 hover:cursor-default text-[1.5rem]">
                             Erro on Transaction
                           </p>
                         </div>
@@ -363,7 +365,10 @@ export const MintModal: React.FC<MintModalProps> = ({
 
                   {Mintstatus && MetadataStatus && ImageStatus && (
                     <div className="flex items-center justify-center">
-                      <Link to="/mynfts" className="text-blue-300 underline">
+                      <Link
+                        to={`/MyNfts/${ownerAddress}`}
+                        className="text-blue-300 underline"
+                      >
                         Go to My NFT
                       </Link>
                     </div>

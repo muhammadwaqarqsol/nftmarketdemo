@@ -7,8 +7,18 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import NftCard from "../componensts/NftCard";
 
+type NftData = {
+  title: string;
+  _id: string;
+  description: string;
+  ipfsHash: string;
+  ownerAddress: string;
+  tokenId: string; // or string, depending on your use case
+  attributes: Array<Object>; // or define a specific type for attributes if known
+};
+
 export const MyNfts = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<NftData[]>([]);
   const { isConnected, address } = useAccount();
   const params = useParams();
   async function fetchData() {
@@ -42,7 +52,7 @@ export const MyNfts = () => {
               <h2 className="h2 section-title">Explore Your Own Nfts</h2>
             </div>
 
-            {/* <ul className="grid-list">
+            <ul className="grid-list">
               {data?.map((e, i) => {
                 return (
                   <li key={i}>
@@ -50,12 +60,13 @@ export const MyNfts = () => {
                       src={e.ipfsHash}
                       title={e.title}
                       ownerAddress={e.ownerAddress}
-                      id={e.id}
+                      _id={e._id}
+                      ipfsHash={e.ipfsHash}
                     />
                   </li>
                 );
               })}
-            </ul> */}
+            </ul>
           </div>
         ) : (
           <div className="container">

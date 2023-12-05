@@ -10,41 +10,73 @@ import axios from "axios";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isDisconnected } = useAccount();
   const [data, setData] = useState<any>({});
   const [openProfile, setOpenProfile] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  // const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  // const fetchUser = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       `http://localhost:5004/users/getsingleuser/${address}`
+  //     );
+  //     console.log("user res", res);
+
+  //     // Check if user data is not available and the user is connected
+  //     if (!res.data && isConnected) {
+  //       // Open the modal only if the address is not stored in the database
+  //       setOpenModal(true);
+  //       // document.body.style.pointerEvents = "none";
+  //       // setIsOverlayVisible(true); // Show overlay
+  //     } else {
+  //       setOpenModal(false);
+  //       // document.body.style.pointerEvents = "auto";
+  //       // setIsOverlayVisible(false); // Hide overlay
+  //     }
+  //     // isDisconnected ? setOpenModal(false) : console.log("connected");
+
+  //     setData(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   // Check if the address is defined and not previously stored
+  //   // isDisconnected ? setOpenModal(false) : "";
+  //   if (address && localStorage.getItem("address") !== address) {
+  //     localStorage.setItem("address", address);
+  //     console.log("Hello");
+  //     fetchUser();
+  //   }
+  // }, [address]);
+
   const fetchUser = async () => {
     try {
       axios
         .get(`http://localhost:5004/users/getsingleuser/${address}`)
-        .then((res: any) => {
-          console.log("user res", res);
+        .then((res) => {
+          console.log(res);
           setData(res.data);
-          res.data ? console.log(res) : setOpenModal(!openModal);
+          // res.data ? console.log(res) : setOpenModal(!openModal);
           isConnected
-            ? res.data?.length !== 0
+            ? res.data
               ? console.log(res)
               : setOpenModal(!openModal)
-            : setOpenModal(true);
+            : setOpenModal(false);
         });
     } catch (error) {
       console.log(error);
     }
   };
 
+  let add: any = address;
+
   useEffect(() => {
-    // isConnected
-    //   ? data?.length !== 0
-    //     ? console.log("res effect")
-    //     : setOpenModal(!openModal)
-    //   : setOpenModal(true);
-    if (address !== undefined) {
-      localStorage.setItem("address", address);
-      console.log("Hello");
-      fetchUser();
-    }
+    localStorage.setItem("address", add);
+    fetchUser();
   }, [address]);
+
   return (
     <nav className="flex flex-wrap items-center justify-between p-6">
       <div className="mr-6 flex flex-shrink-0 items-center text-white lg:mr-72">

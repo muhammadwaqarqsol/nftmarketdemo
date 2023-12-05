@@ -17,14 +17,17 @@ type Data = {
   description: string | null;
   tokenId: string | null;
   ownerAddress: string | null;
-  // attributes: Array<object> | undefined;
+  attributes: Array<object> | undefined;
 };
+interface Attribute {
+  trait_type: string;
+  value: string;
+}
 
 const NftDetailPage = () => {
   const [data, setData] = useState<Data | null>();
   // const [ownerAddress, setOwnerAddress] = useState();
-  const [tokenId, setTokenId] = useState();
-  const navigate = useNavigate();
+  // const [tokenId, setTokenId] = useState();
   const params = useParams();
 
   // const { isConnected, address } = useAccount();
@@ -35,7 +38,7 @@ const NftDetailPage = () => {
         .then((res) => {
           console.log("Res", res.data);
           setData(res.data);
-          setTokenId(res.data.tokenId);
+          // setTokenId(res.data.tokenId);
         });
     } catch (error) {
       console.log({ error });
@@ -73,12 +76,50 @@ const NftDetailPage = () => {
               <p className="leading-relaxed text-gray-400">
                 Token Id : {data?.tokenId}
               </p>
-              {/* <h1 className="title-font mb-1 text-3xl font-medium text-sky-400">
-                Attributes
-              </h1>
               <p className="leading-relaxed text-gray-400">
-                {data?.attributes}
-              </p> */}
+                <div className="leading-relaxed text-gray-400">
+                  <h1 className="title-font mb-1 text-3xl font-medium text-sky-400">
+                    Attributes
+                  </h1>
+                  {data?.attributes ? (
+                    <div className="bg-transparent rounded-lg overflow-hidden">
+                      <table className="min-w-full table-auto bg-opacity-0">
+                        <thead className="bg-transparent text-white border-2 border-gray-400">
+                          <tr>
+                            <th className="py-2 px-4 text-gray-400 border-2 border-gray-400">
+                              Trait Type
+                            </th>
+                            <th className="py-2 px-4 text-gray-400">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-center">
+                          {(data.attributes as Attribute[]).map(
+                            (attribute, index) => (
+                              <tr
+                                key={index}
+                                className={`${
+                                  index % 2 === 0
+                                    ? "bg-transparent"
+                                    : "bg-transparent"
+                                }`}
+                              >
+                                <td className="py-2 px-4 border-2 border-gray-400">
+                                  {attribute.trait_type}
+                                </td>
+                                <td className="py-2 px-4 border-2 border-gray-400">
+                                  {attribute.value}
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p>No attributes available</p>
+                  )}
+                </div>
+              </p>
             </div>
           </div>
         </div>
