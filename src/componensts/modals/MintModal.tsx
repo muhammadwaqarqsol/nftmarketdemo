@@ -17,14 +17,14 @@ import {
 import { abi } from "../../abis/0x5281cFc34aF3b26C392281ee4537A734E467dD15";
 // import { useContractWrite, usePrepareContractWrite } from "wagmi";
 // import { abi } from "../../abis/0xb9Faa5947D00e7b1f9B6909cf6ACa10A927461F3";
-type NftData = {
-  title: string;
-  description: string;
-  ipfsHash: string;
-  ownerAddress: string;
-  tokenId: string; // or string, depending on your use case
-  attributes: Array<Object>; // or define a specific type for attributes if known
-};
+// type NftData = {
+//   title: string;
+//   description: string;
+//   ipfsHash: string;
+//   ownerAddress: string;
+//   tokenId: string; // or string, depending on your use case
+//   attributes: Array<Object>; // or define a specific type for attributes if known
+// };
 const client = createPublicClient({
   chain: sepolia,
   transport: http(),
@@ -62,7 +62,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 }: MintModalProps) => {
   // Access the title prop and use it in your component
   const [ipfsHash, setIpfshash] = useState("");
-  const [tokenId, setTokenId] = useState("");
+  const [tokenId, setTokenId] = useState<Number>();
   const { address: ownerAddress, isConnected } = useAccount();
   const [showModal, setShowModal] = useState(false);
   const [MetadataStatus, setMetadataStatus] = useState(false);
@@ -82,9 +82,7 @@ export const MintModal: React.FC<MintModalProps> = ({
         abi: abi,
         functionName: "_tokenIds",
       })) as string; // Assuming the result should be a string
-
-      setTokenId(result); // Update the state with the fetched data
-      console.log(Number(result).toString());
+      setTokenId(Number(result) + 1); // Update the state with the fetched data
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -92,32 +90,38 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   let { isSuccess } = useWaitForTransaction({
     hash: data?.hash,
-    onSuccess: () => {
-      fetchData();
+    onSuccess: async () => {
+      await fetchData();
+      let title = getNftDetails.title;
+      let description = getNftDetails.description;
       console.log(
-        getNftDetails.title, //need to check becuase after success it might become empty
-        getNftDetails.description, //need to check because after success it might become empty
-        Number(tokenId).toString(),
+        title,
+        description,
+        tokenId,
         ownerAddress,
-        attributes
+        attributes,
+        ipfsHash
       );
+      await axios
+        .post("http://localhost:5004/nfts/createnft", {
+          title,
+          description,
+          ipfsHash,
+          ownerAddress,
+          tokenId,
+          attributes,
+        })
+        .then((result) => console.log(result));
+      console.log("Function on success completed");
       setData([]);
       setNftDetails({ title: "", description: "" });
-      // await axios
-      //   .post("http://localhost:5004/nfts/createnft", {
-      //     NftName,
-      //     Description,
-      //     ipfsHash,
-      //     ownerAddress,
-      //     contractAddress,
-      //     sellerAddress,
-      //     tokenId,
-      //     active,
-      //   })
-      //   .then((result) => console.log(result));
-      // console.log("Function on success completed");
     },
   });
+
+  // function get() {
+  //   setTitle("Title");
+  //   console.log(title);
+  // }
 
   async function mintNft() {
     console.log("called");
@@ -194,7 +198,7 @@ export const MintModal: React.FC<MintModalProps> = ({
 
   return (
     <React.Fragment>
-      <button onClick={() => fetchData()}>Fetch</button>
+      {/* <button onClick={get}>Fetch</button> */}
       {isConnected ? (
         <button
           disabled={!isFormValid || showModal}
