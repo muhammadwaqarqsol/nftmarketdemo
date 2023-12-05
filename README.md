@@ -38,7 +38,7 @@ export default {
 # Running Project
 
 - npm i //installing the dependencies
-- npm run dev //to start to project
+- npm run dev //to start the project
 
 # ENV Required variables
 
