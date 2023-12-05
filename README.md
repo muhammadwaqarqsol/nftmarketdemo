@@ -40,7 +40,7 @@ export default {
 - npm i //installing the dependencies
 - npm run dev //to start to project
 
-# ENV variables Requires
+# ENV Required variables
 
 - Infure or alchemy Key
 - connectwallet Id for QR scan wallet connect
