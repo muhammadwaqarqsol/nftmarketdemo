@@ -1,6 +1,3 @@
-import React from "react";
-import NftCardContainer from "../componensts/NftCardContainer";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -19,7 +16,7 @@ type NftData = {
 
 export const MyNfts = () => {
   const [data, setData] = useState<NftData[]>([]);
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
   const params = useParams();
   async function fetchData() {
     try {

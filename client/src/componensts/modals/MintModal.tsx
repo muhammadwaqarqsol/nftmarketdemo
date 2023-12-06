@@ -188,6 +188,7 @@ export const MintModal: React.FC<MintModalProps> = ({
         setImageStatus(false);
         setSelectedImage(null);
       }, 3000);
+      console.log(modalTimeout);
       console.log(getNftDetails);
     }
   }, [isSuccess]);

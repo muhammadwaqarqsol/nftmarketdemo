@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import "../styles/profile.css";
 import axios from "axios";
 import { useAccount } from "wagmi";
 
 const Profile = () => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const [data, setData] = useState<any>({});
 
   const fetchUser = async () => {

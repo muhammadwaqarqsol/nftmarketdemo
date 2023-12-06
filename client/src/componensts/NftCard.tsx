@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { useAccount } from "wagmi";
 // import nft from "../utilities/auction-11.jpg";
 import { Link } from "react-router-dom";
 
@@ -11,8 +9,6 @@ type AppProps = {
   ipfsHash: string;
 };
 const NftCard = (props: AppProps) => {
-  const { address } = useAccount();
-
   return (
     <div className="card explore-card">
       <figure className="card-banner">

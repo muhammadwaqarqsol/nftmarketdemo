@@ -2,15 +2,11 @@
 // import { useRouter } from "next/router";
 // import { api } from "~/utils/api";
 import { Link } from "react-router-dom";
-import { useAccount } from "wagmi";
 // import StripeCheckOutButton from "../stripeComponents/checkout";
 // import Link from "next/link";
-type AppProps = {
-  create: string;
-};
+
 export default function Hero() {
   // const router = useRouter();
-  const { isConnected } = useAccount();
 
   // const { mutateAsync, error } = api.nft.createNft.useMutation();
 

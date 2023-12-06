@@ -1,8 +1,6 @@
-import React from "react";
 import NftCard from "./NftCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAccount } from "wagmi";
 
 type NftData = {
   title: string;
@@ -15,7 +13,6 @@ type NftData = {
 };
 
 const NftCardContainer = () => {
-  const { isConnected } = useAccount();
   const [data, setData] = useState<NftData[]>([]);
   async function fetchData() {
     try {

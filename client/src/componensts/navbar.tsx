@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 
 import { useAccount } from "wagmi";
 import { ConnectKitButton } from "connectkit";
@@ -10,7 +10,7 @@ import axios from "axios";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { address, isConnected, isDisconnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const [data, setData] = useState<any>({});
   const [openProfile, setOpenProfile] = useState(false);
   const [openModal, setOpenModal] = useState(false);

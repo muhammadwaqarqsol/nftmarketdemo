@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import  { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "../styles/createProfileModal.css";
 import createuser from "../utilities/createuser.png";
 
@@ -9,9 +8,8 @@ const CreateProfileModal = () => {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   // const [walletAddress, setWalletAddress] = useState<any>();
-  const { address: walletAddress, isConnected } = useAccount();
+  const { address: walletAddress } = useAccount();
 
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     console.log(walletAddress);
