@@ -13,3 +13,4 @@ app.use(router);
 app.listen(PORT, () => {
   console.log(`Server Started at PORT : ${PORT}`);
 });
+module.exports =app;
