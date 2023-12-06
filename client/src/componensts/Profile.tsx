@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/profile.css";
 import axios from "axios";
 import { useAccount } from "wagmi";
@@ -10,7 +10,9 @@ const Profile = () => {
   const fetchUser = async () => {
     try {
       axios
-        .get(`http://localhost:5004/users/getsingleuser/${address}`)
+        .get(
+          `https://nftmarketdemo-server.vercel.app/users/getsingleuser/${address}`
+        )
         .then((res) => {
           console.log(res);
           setData(res.data);

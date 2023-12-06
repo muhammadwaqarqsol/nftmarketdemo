@@ -27,7 +27,9 @@ const NftDetailPage = () => {
   async function fetchData() {
     try {
       await axios
-        .get(`http://localhost:5004/nfts/getsinglenft/${params._id}`)
+        .get(
+          `https://nftmarketdemo-server.vercel.app/nfts/getsinglenft/${params._id}`
+        )
         .then((res) => {
           console.log("Res", res.data);
           setData(res.data);

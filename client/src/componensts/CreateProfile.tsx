@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "../styles/createProfileModal.css";
 import createuser from "../utilities/createuser.png";
@@ -10,13 +10,12 @@ const CreateProfileModal = () => {
   // const [walletAddress, setWalletAddress] = useState<any>();
   const { address: walletAddress } = useAccount();
 
-
   const handleSubmit = async (e: any) => {
     console.log(walletAddress);
     e.preventDefault();
     try {
       await axios
-        .post("http://localhost:5004/users/createuser", {
+        .post("https://nftmarketdemo-server.vercel.app/users/createuser", {
           username,
           email,
           walletAddress,
